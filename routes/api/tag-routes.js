@@ -34,15 +34,28 @@ router.post('/', async (req, res) => {
   try {
     await Tag.create(req.body)
     const newTag = await Tag.findOne({ where: req.body })
-  res.status(200).json([{message: 'category update successfully'}, newTag])
+  res.status(200).json([{message: 'New tag created successfully'}, newTag])
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
   }
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   // update a tag's name by its `id` value
+  try {
+    console.log('req:', req.body)
+    await Tag.update(req.body, {
+      where: {
+        id: req.params.id
+      }
+    })
+    const updated_tag = await Tag.findByPk(req.params.id) 
+    res.status(200).json({message: 'tag update successfully', updated_tag})
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err);
+  }
 });
 
 router.delete('/:id', (req, res) => {
